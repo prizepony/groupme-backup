@@ -50,8 +50,8 @@ def main():
 	# configure the argument options parser for the script
 	parser = optparse.OptionParser(version="%prog 0.1")
 	parser.add_option('--debug', action="store_true", dest="debug", help="debug output", default=False)
-	parser.add_option('--token', type='string', dest="gm_token", help="GroupMe developer access token")
-	parser.add_option('--groupid', type="int", dest="groupid", help="GroupMe group ID to download media from")
+	parser.add_option('--token', type='string', dest="token", help="GroupMe developer access token")
+	parser.add_option('--groupid', type="int", dest="id", help="GroupMe group ID to download media from")
 	options, args = parser.parse_args()
 
 	if options.debug == True:
@@ -60,14 +60,14 @@ def main():
 		logging.basicConfig(level=logging.INFO)
 
 	# parse groupme developer access token
-	if options.gm_token:
-		groupme_token = options.gm_token
+	if options.token:
+		groupme_token = options.token
 	else:
 		groupme_token = credentials['gm_access_token']
 
 	# parse groupme group id
-	if options.groupid:
-		groupid = options.groupid
+	if options.id:
+		groupid = options.id
 	else:
 		groupid = credentials['gm_group_id']
 
@@ -83,8 +83,9 @@ def main():
 			logging.info('Group selected (%s)' % groupid)
 		except:
 			logging.error('Unable to find group (%d)' % groupid)
+	# if no group specified, create interactive list
 	else:
-		raise ValueError('No group ID specified.')
+		groups = list(client.groups.list_all())
 
 	# retrieve attachment data from the group
 	retrieved_attachments = []
